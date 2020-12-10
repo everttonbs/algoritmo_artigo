@@ -13,9 +13,8 @@ def carousel_forteits(X, W, P, b, F, D, alfa, beta):
             S_aux.pop(-1) # remove o último elemento da lista
         except:
             pass
-    Si = set(S_aux)
-    # Si = S.copy()
-
+    Si = S_aux.copy()
+    
     size = len(Si)    
 
     number_iteration = alfa * size
@@ -23,22 +22,18 @@ def carousel_forteits(X, W, P, b, F, D, alfa, beta):
         # remove o elemento mais antigo da lista
         #S2 = RemoveOldestChoices(S2)
         try:
-            Si.pop() # remove o primeiro elemento
+            Si.pop(0) # remove o primeiro elemento
         except:
             pass
 
         j = GreedyForfeits.GreedyForfeitsSingle(X, W, P, b, F, D, Si)
 
-        # converter em um conjunto
-        j = set([j])
+        Si.append(j)
         
-        # U - união dos conjuntos
-        Si = Si | j
 
     Sii = GreedyForfeits.GreedyForfeitsInit(X, W, P, b, F, D, Si)
 
     return Sii
 
     
-
 

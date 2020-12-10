@@ -96,9 +96,9 @@ def file_input():
 
         start = time.time()
 
-        # alfa, beta = 2, 0.05
-        # out = carousel_forfeits.carousel_forteits(X, W, P, b, F, D, alfa, beta)
-        out = GreedyForfeits.GreedyForfeits(X, W, P, b, F, D)
+        alfa, beta = 2, 0.05
+        out = carousel_forfeits.carousel_forteits(X, W, P, b, F, D, alfa, beta)
+        # out = GreedyForfeits.GreedyForfeits(X, W, P, b, F, D)
         end = time.time()
 
         out_sorted = sorted(out)
