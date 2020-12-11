@@ -27,7 +27,6 @@ def carousel_forteits(X, W, P, b, F, D, alfa, beta):
             pass
 
         j = GreedyForfeits.GreedyForfeitsSingle(X, W, P, b, F, D, Si)
-
         Si.append(j)
         
 

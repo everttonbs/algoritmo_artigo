@@ -36,6 +36,7 @@ def GreedyForfeits(X, W, P, b, F, D):
                 # F = [(i, j), ...]
                 if F[k][0] == X[X_iter[i]] and F[k][1] in S:
                     P_aux[X_iter[i]] = P_aux[X_iter[i]] - D[k]
+                    break
             
             ratio.append(P_aux[X_iter[i]] / W[X_iter[i]])
 
@@ -61,7 +62,11 @@ def GreedyForfeits(X, W, P, b, F, D):
 
 def GreedyForfeitsSingle(X, W, P, b, F, D, Si):
     S = Si.copy()
-    b_res = b # peso possível de carregar
+    b_res = b
+    # peso possível de carregar
+    for item in Si:
+        index = X.index(item)
+        b_res = b_res - W[index]
 
     while len(X) - len(S) != 0:
         X_iter = list() # itens fora da mochila
@@ -81,19 +86,26 @@ def GreedyForfeitsSingle(X, W, P, b, F, D, Si):
                 # F = [(i, j), ...]
                 if F[k][0] == X[X_iter[i]] and F[k][1] in S:
                     P_aux[X_iter[i]] = P_aux[X_iter[i]] - D[k]
+                    break
             
             ratio.append(P_aux[X_iter[i]] / W[X_iter[i]])
 
         best_item = max(ratio)
         index = ratio.index(best_item)
 
-        if X[X_iter[index]] not in S:                
+        if X[X_iter[index]] not in S:               
             return X[X_iter[index]] 
 
 
 def GreedyForfeitsInit(X, W, P, b, F, D, Sii):
     S = Sii.copy()
-    b_res = b # peso possível de carregar
+    b_res = b
+    # peso possível de carregar
+    for item in Sii:
+        index = X.index(item)
+        b_res = b_res - W[index]
+
+
 
     while len(X) - len(S) != 0:
         X_iter = list() # itens fora da mochila
@@ -117,6 +129,7 @@ def GreedyForfeitsInit(X, W, P, b, F, D, Sii):
                 # F = [(i, j), ...]
                 if F[k][0] == X[X_iter[i]] and F[k][1] in S:
                     P_aux[X_iter[i]] = P_aux[X_iter[i]] - D[k]
+                    break
             
             ratio.append(P_aux[X_iter[i]] / W[X_iter[i]])
 
