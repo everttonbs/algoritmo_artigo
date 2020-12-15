@@ -7,6 +7,7 @@ import time
 from mochila_conflito import GreedyForfeits
 from mochila_conflito import carousel_forfeits
 from mochila_conflito import knapsack
+from mochila_conflito import cplex_main
 # from mochila_conflito import create_inputs
 
 # X, W, P, b, F, D
@@ -98,20 +99,34 @@ def file_input():
 
         alfa, beta = 2, 0.05
         out = carousel_forfeits.carousel_forteits(X, W, P, b, F, D, alfa, beta)
+
         # out = GreedyForfeits.GreedyForfeits(X, W, P, b, F, D)
+
+        # CPLEX
+        # cplex_main.run_CPLEX(X, W, P, b, list(), D)
+        # out = cplex_main.run_CPLEX(X, W, P, b, F, D)        
+
         end = time.time()
 
-        out_sorted = sorted(out)
-        sum_profit = calcule_profit(out_sorted, X, P)
-        sum_forfeits = calcule_forfeits(out_sorted, F)
-        
-        
-        print('-------------------')
-        # print('itens -> ', out_sorted)
-        print('Profit -> ', sum_profit)        
-        print('Forfeits -> ', sum_forfeits)      
-        print('Time: ', (end - start))
-        print('-------------------\n')
+        if len(out) == 0:
+            print('TL')
+        else:
+            get_result(out, X, P, F, end, start)
+
+
+def get_result(out, X, P, F, end, start):
+
+    out_sorted = sorted(out)
+    sum_profit = calcule_profit(out_sorted, X, P)
+    sum_forfeits = calcule_forfeits(out_sorted, F)
+    
+    
+    print('-------------------')
+    # print('itens -> ', out_sorted)
+    print('Profit -> ', sum_profit)        
+    print('Forfeits -> ', sum_forfeits)      
+    print('Time: ', (end - start))
+    print('-------------------\n')
 
 
 def calcule_profit(list_items, X, P):

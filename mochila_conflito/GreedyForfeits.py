@@ -34,9 +34,9 @@ def GreedyForfeits(X, W, P, b, F, D):
             # Análise de conflitos
             for k in range(len(F)):
                 # F = [(i, j), ...]
-                if F[k][0] == X[X_iter[i]] and F[k][1] in S:
+                if (F[k][0] == X[X_iter[i]] or F[k][1] == X[X_iter[i]]) and ( F[k][1] in S or F[k][0] in S):
                     P_aux[X_iter[i]] = P_aux[X_iter[i]] - D[k]
-                    break
+                    # break
             
             ratio.append(P_aux[X_iter[i]] / W[X_iter[i]])
 
@@ -84,9 +84,10 @@ def GreedyForfeitsSingle(X, W, P, b, F, D, Si):
             # Análise de conflitos
             for k in range(len(F)):
                 # F = [(i, j), ...]
-                if F[k][0] == X[X_iter[i]] and F[k][1] in S:
+                #if F[k][0] == X[X_iter[i]] and F[k][1] in S:
+                if (F[k][0] == X[X_iter[i]] or F[k][1] == X[X_iter[i]]) and ( F[k][1] in S or F[k][0] in S):
                     P_aux[X_iter[i]] = P_aux[X_iter[i]] - D[k]
-                    break
+                    # break
             
             ratio.append(P_aux[X_iter[i]] / W[X_iter[i]])
 
@@ -127,9 +128,9 @@ def GreedyForfeitsInit(X, W, P, b, F, D, Sii):
             # Análise de conflitos
             for k in range(len(F)):
                 # F = [(i, j), ...]
-                if F[k][0] == X[X_iter[i]] and F[k][1] in S:
+                if (F[k][0] == X[X_iter[i]] or F[k][1] == X[X_iter[i]]) and ( F[k][1] in S or F[k][0] in S):
                     P_aux[X_iter[i]] = P_aux[X_iter[i]] - D[k]
-                    break
+                    # break
             
             ratio.append(P_aux[X_iter[i]] / W[X_iter[i]])
 
