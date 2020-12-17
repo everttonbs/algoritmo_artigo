@@ -8,6 +8,7 @@ from mochila_conflito import GreedyForfeits
 from mochila_conflito import carousel_forfeits
 from mochila_conflito import knapsack
 from mochila_conflito import cplex_main
+import numpy as np
 # from mochila_conflito import create_inputs
 
 # X, W, P, b, F, D
@@ -111,21 +112,23 @@ def file_input():
         if len(out) == 0:
             print('TL')
         else:
-            get_result(out, X, P, F, end, start)
+            get_result(out, X, P, F, D, end, start)
 
 
-def get_result(out, X, P, F, end, start):
+def get_result(out, X, P, F, D, end, start):
 
     out_sorted = sorted(out)
     sum_profit = calcule_profit(out_sorted, X, P)
-    sum_forfeits = calcule_forfeits(out_sorted, F)
+    sum_forfeits, forfeit_costs = calcule_forfeits(out_sorted, F, D)
     
     
     print('-------------------')
-    # print('itens -> ', out_sorted)
-    print('Profit -> ', sum_profit)        
-    print('Forfeits -> ', sum_forfeits)      
-    print('Time: ', (end - start))
+   #  print('itens ->', out_sorted)
+    print('Profit ->', sum_profit)      
+    print('Cost ->', forfeit_costs)      
+    print('Forfeits ->', sum_forfeits) 
+    print('Sol. ->', sum_profit - forfeit_costs)     
+    print('Time:', (end - start))
     print('-------------------\n')
 
 
@@ -138,14 +141,18 @@ def calcule_profit(list_items, X, P):
 
     return sum_profit
 
-def calcule_forfeits(list_items, F):
+def calcule_forfeits(list_items, F, D):
     sum_forfeits = 0
+    forfeit_costs = 0
 
+    i = 0
     for pares in F:
         if pares[0] in list_items and pares[1] in list_items:
             sum_forfeits += 1
+            forfeit_costs += D[i]
+        i += 1
 
-    return sum_forfeits
+    return sum_forfeits, forfeit_costs
 
 
 

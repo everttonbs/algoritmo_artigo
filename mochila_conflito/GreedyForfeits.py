@@ -9,10 +9,9 @@
 def GreedyForfeits(X, W, P, b, F, D):
 
     S = list() # itens na mochila
-    b_res = b # peso possível de carregar
-    sum_profit = 0
-    sum_forfeits = 0
+    b_res = b # peso possível de carregar       
 
+    # Se len(X) - len(S) == 0, todos os elementos estão dentro da mochila
     while len(X) - len(S) != 0:
         
         X_iter = list() # itens fora da mochila
@@ -27,18 +26,20 @@ def GreedyForfeits(X, W, P, b, F, D):
             return S
 
         ratio = list()
-        P_aux = list()
-        for i in range(len(X_iter)):
+        # P_aux = list()
+        for i in X_iter:
             P_aux = P[:]
 
             # Análise de conflitos
             for k in range(len(F)):
                 # F = [(i, j), ...]
-                if (F[k][0] == X[X_iter[i]] or F[k][1] == X[X_iter[i]]) and ( F[k][1] in S or F[k][0] in S):
-                    P_aux[X_iter[i]] = P_aux[X_iter[i]] - D[k]
+                if X[i] in F[k]:
+                    if F[k][1] in S or F[k][0] in S:
+                        # Atualização do Profit devido ao conflito            
+                        P_aux[i] = P_aux[i] - D[k]
                     # break
             
-            ratio.append(P_aux[X_iter[i]] / W[X_iter[i]])
+            ratio.append(P_aux[i] / W[i])
 
         best_item = max(ratio)
         index = ratio.index(best_item)
@@ -52,14 +53,14 @@ def GreedyForfeits(X, W, P, b, F, D):
             #S = S | set([X[X_iter[index]]])
             S.append(X[X_iter[index]])
             b_res = b_res - W[X_iter[index]]
-            sum_profit += P[X_iter[index]]
-            sum_forfeits += D[X_iter[index]]
             
         # print('Peso ', b_res) 
 
     return S
 
 
+
+############### - ############################# - ############################## - ################
 def GreedyForfeitsSingle(X, W, P, b, F, D, Si):
     S = Si.copy()
     b_res = b
@@ -77,19 +78,20 @@ def GreedyForfeitsSingle(X, W, P, b, F, D, Si):
                 # print(X[i])        
 
         ratio = list()
-        P_aux = list()
-        for i in range(len(X_iter)):
+        # P_aux = list()
+        for i in X_iter:
             P_aux = P[:]
 
             # Análise de conflitos
             for k in range(len(F)):
                 # F = [(i, j), ...]
-                #if F[k][0] == X[X_iter[i]] and F[k][1] in S:
-                if (F[k][0] == X[X_iter[i]] or F[k][1] == X[X_iter[i]]) and ( F[k][1] in S or F[k][0] in S):
-                    P_aux[X_iter[i]] = P_aux[X_iter[i]] - D[k]
+                if X[i] in F[k]:
+                    if F[k][1] in S or F[k][0] in S:
+                        # Atualização do Profit devido ao conflito            
+                        P_aux[i] = P_aux[i] - D[k]
                     # break
             
-            ratio.append(P_aux[X_iter[i]] / W[X_iter[i]])
+            ratio.append(P_aux[i] / W[i])
 
         best_item = max(ratio)
         index = ratio.index(best_item)
@@ -121,18 +123,20 @@ def GreedyForfeitsInit(X, W, P, b, F, D, Sii):
             return S
 
         ratio = list()
-        P_aux = list()
-        for i in range(len(X_iter)):
+        # P_aux = list()
+        for i in X_iter:
             P_aux = P[:]
 
             # Análise de conflitos
             for k in range(len(F)):
                 # F = [(i, j), ...]
-                if (F[k][0] == X[X_iter[i]] or F[k][1] == X[X_iter[i]]) and ( F[k][1] in S or F[k][0] in S):
-                    P_aux[X_iter[i]] = P_aux[X_iter[i]] - D[k]
+                if X[i] in F[k]:
+                    if F[k][1] in S or F[k][0] in S:
+                        # Atualização do Profit devido ao conflito            
+                        P_aux[i] = P_aux[i] - D[k]
                     # break
             
-            ratio.append(P_aux[X_iter[i]] / W[X_iter[i]])
+            ratio.append(P_aux[i] / W[i])
 
         best_item = max(ratio)
         index = ratio.index(best_item)
