@@ -8,6 +8,7 @@ from mochila_conflito import GreedyForfeits
 from mochila_conflito import carousel_forfeits
 from mochila_conflito import knapsack
 from mochila_conflito import cplex_main
+from mochila_conflito import ils_heur
 import numpy as np
 # from mochila_conflito import create_inputs
 
