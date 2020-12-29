@@ -9,11 +9,10 @@ from mochila_conflito import carousel_forfeits
 from mochila_conflito import knapsack
 from mochila_conflito import cplex_main
 from mochila_conflito import ils_heur
-import numpy as np
+
 # from mochila_conflito import create_inputs
 
 # X, W, P, b, F, D
-
 # X -> itens disponíveis
 # W -> peso de cada item
 # P (Profit) -> lucro, ganho, valor de cada item
@@ -50,7 +49,9 @@ def file_input():
     list_input = os.listdir('inputs')    
     
     for file in list_input:
-        data = open('inputs\\' + file, 'r')
+        # Windows
+        # data = open('inputs\\' + file, 'r')
+        data = open('inputs/' + file, 'r')
         print('inputs\\' + file)
         lines = data.readlines()
 
@@ -99,14 +100,17 @@ def file_input():
 
         start = time.time()
 
-        alfa, beta = 2, 0.05
-        out = carousel_forfeits.carousel_forteits(X, W, P, b, F, D, alfa, beta)
+        # alfa, beta = 2, 0.05
+        # out = carousel_forfeits.carousel_forteits(X, W, P, b, F, D, alfa, beta)
 
-        # out = GreedyForfeits.GreedyForfeits(X, W, P, b, F, D)
+        out = GreedyForfeits.GreedyForfeits(X, W, P, b, F, D)
 
         # CPLEX
         # cplex_main.run_CPLEX(X, W, P, b, list(), D)
-        # out = cplex_main.run_CPLEX(X, W, P, b, F, D)        
+        # out = cplex_main.run_CPLEX(X, W, P, b, F, D)
+        
+        # ILS
+        # out = ils_heur.run_ils(X, W, P, b, F, D)      
 
         end = time.time()
 
@@ -154,7 +158,6 @@ def calcule_forfeits(list_items, F, D):
         i += 1
 
     return sum_forfeits, forfeit_costs
-
 
 
 def random_input():
