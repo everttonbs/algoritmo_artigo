@@ -13,7 +13,7 @@ def run_ils(X, W, P, b, F, D):
 def LocalSearch(S0, X, W, P, b, F, D):
 
     X_iter = X.copy()
-    best_profit = calcule_profit(S0, X, P)
+    best_solution = calcule_profit(S0, X, P) - calcule_forfeits(S0, F, D)    
     
     # Elementos que não estão na mochila
     for i in S0:
@@ -26,9 +26,9 @@ def LocalSearch(S0, X, W, P, b, F, D):
             S1.remove(i)
             S1.append(j)
 
-            profit = calcule_profit(S1, X, P)
-            if profit > best_profit:
-                best_profit = profit
+            solution = calcule_profit(S1, X, P) - calcule_forfeits(S1, F, D)
+            if solution > best_solution:
+                best_solution = solution
                 list_change = [i, j]
 
             S1.remove(j)
@@ -36,7 +36,7 @@ def LocalSearch(S0, X, W, P, b, F, D):
 
     if len(list_change) > 1:
         S1 = move_swap(S1, list_change)
-  
+
 
     return S1            
 
@@ -50,14 +50,25 @@ def calcule_profit(S0, X, P):
 
     return sum_profit
 
+def calcule_forfeits(S0, F, D):
+    # sum_forfeits = 0
+    forfeit_costs = 0
+
+    i = 0
+    for pares in F:
+        if pares[0] in S0 and pares[1] in S0:
+            # sum_forfeits += 1
+            forfeit_costs += D[i]
+        i += 1
+
+    return forfeit_costs
+
 def move_swap(S1, swap):
     S1.remove(swap[0])
     S1.append(swap[1])
 
     return S1
 
-
     
 def Perturb():
     ...
-
