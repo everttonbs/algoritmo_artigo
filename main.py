@@ -50,10 +50,10 @@ def file_input():
     
     for file in list_input:
         # Windows
-        data = open('inputs\\' + file, 'r')
+        # data = open('inputs\\' + file, 'r')
         
         # Linux
-        # data = open('inputs/' + file, 'r')
+        data = open('inputs/' + file, 'r')
         
         print('inputs\\' + file)
         lines = data.readlines()

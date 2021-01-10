@@ -5,27 +5,34 @@ from mochila_conflito import carousel_forfeits
 def run_ils(X, W, P, b, F, D):
     # Solução Inicial
     S0 = GreedyForfeits.GreedyForfeits(X, W, P, b, F, D)
+    
     hash_forfeits = get_hash(X, F) # retorna dicionario
-
-    # S = local_search_old(S0, X, W, P, b, F, D)
-    Si = local_search(S0, X, W, b, hash_forfeits)
+    
+    Si = local(S0, X, W, b, hash_forfeits, S0[0])
+    # Si = local_search(S0, X, W, b, hash_forfeits)
 
     Sii = GreedyForfeits.GreedyForfeitsInit(X, W, P, b, F, D, Si)
-    # print('Solução inical: ', len(S0))
-    # print('Solução ILS: ', len(Si))
-    # print('Solução final -> ', len(Sii))
-    # print('Verificação de conjunto -> ', len(set(Sii)))
+    best_local = calcule_sum_forfeits(Sii, hash_forfeits)   
+    
+    S1 = Sii.copy()  
 
-    # count = 1
-    # i = 1
+    while True:
 
-    # while count <= i:
-    #     S1 = perturb_solution()
-    #     S1 = local_search(S1, X, W, P, b, F, D)
-    #     accept_solution()
+        S1 = perturb_solution(Sii)        
+        S1 = local(S1, X, W, b, hash_forfeits, S1[0])
         
-    #     count += 1        
+        if accept_solution(best_local, S1, hash_forfeits):
+            break        
 
+    Sii = GreedyForfeits.GreedyForfeitsInit(X, W, P, b, F, D, S1)
+
+    print('Solução inical: ', len(S0))
+    print('Solução ILS: ', len(Si))
+    print('Solução final -> ', len(Sii))
+    print('Verificação de conjunto -> ', len(set(Sii)))
+    print(calcule_sum_forfeits(Sii, hash_forfeits))
+
+    
     return Sii
     # return list()
 
@@ -37,13 +44,62 @@ def get_hash(X, F):
     for x in X:
         for f in F:
             if x in f:
-                list_forfeits.append(f)
+                # list_forfeits.append(f)
+                if x == f[0]:
+                    list_forfeits += [f[1]]
+                else:
+                    list_forfeits += [f[0]]
 
         hash_forfeits[x] = list_forfeits
-        list_forfeits = list()    
-
+        list_forfeits = list()
 
     return hash_forfeits
+
+def get_cost(X, F, D):
+    hash_cost = dict()
+    list_forfeits = list() 
+
+    for x in X:
+        i = 0
+        for f in F:            
+            if x in f:
+                # list_forfeits.append(f)
+                if x == f[0]:
+                    list_forfeits.append([f[1], D[i]])
+                else:
+                    list_forfeits.append([f[0], D[i]])
+
+            i += 1
+
+        hash_cost[x] = list_forfeits
+        list_forfeits = list()
+
+    return hash_cost
+
+def local(S0, X, W, b, hash_forfeits, i):
+    
+    hash_changes = dict()
+    hash_changes[i] = list()
+
+    sum_forfeits_s = calcule_sum_forfeits(S0, hash_forfeits[i])
+
+    if sum_forfeits_s == 0:
+        return S0
+
+    for x in hash_forfeits[i]:
+        
+        sum_forfeits_x = calcule_sum_forfeits(S0, hash_forfeits[x])        
+        
+        # Só adiciona itens com menores conflitos
+        if sum_forfeits_x < sum_forfeits_s:                      
+            hash_changes[i].append(x)
+
+            S1 = swap_itens(S0, X, W, b, hash_changes)
+            # print(S1)
+            return S1
+
+    return S0  
+
 
 def local_search(S0, X, W, b, hash_forfeits):
 
@@ -54,29 +110,22 @@ def local_search(S0, X, W, b, hash_forfeits):
         if key in S0:
             # print(value)            
             for v in value:
-                if v[0] in S0 and v[1] in S0:                    
-                    sum_forfeits += 1
-            # print(sum_forfeits)
+                if v in S0:                    
+                    sum_forfeits += 1            
 
     best_solution = sum_forfeits
+
     hash_changes = dict()
 
     for s in S0:
-        sum_forfeits_s = 0
         hash_changes[s] = list()
 
-        forfeit_i = hash_forfeits[s]
-        for f in forfeit_i:
-            if f[0] != s and f[0] in S0:
-                sum_forfeits_s += 1
-            elif f[1] != s and f[1] in S0:
-                sum_forfeits_s += 1
+        sum_forfeits_s = calcule_sum_forfeits(S0, hash_forfeits[s])
 
-        for x in S0:
-            best_local = 0
+        for x in hash_forfeits[s]:            
             
             if x != s:
-                sum_forfeits_x = calcule_sum_forfeits(S0, hash_forfeits, x)
+                sum_forfeits_x = calcule_sum_forfeits(S0, hash_forfeits[x])
             else:
                 sum_forfeits_x = len(S0) + 1 
 
@@ -90,17 +139,14 @@ def local_search(S0, X, W, b, hash_forfeits):
             
            
                 
-def calcule_sum_forfeits(S0, hash_forfeits, j):
-    
-    forfeit_j = hash_forfeits[j]    
+def calcule_sum_forfeits(S0, hash_forfeits):    
+      
     sum_forfeits_j = 0
     
-    for f in forfeit_j: 
+    for f in hash_forfeits:
 
-        if f[0] != j and f[0] in S0:
-            sum_forfeits_j += 1
-        elif f[1] != j and f[1] in S0:
-            sum_forfeits_j += 1        
+        if f in S0:
+            sum_forfeits_j += 1            
 
     return sum_forfeits_j
 
@@ -129,7 +175,7 @@ def swap_itens(S0, X, W, b, hash_changes):
         except:
             index = X.index(s)
 
-            if s not in S0:
+            if s not in S1:
                 Wi = W[index]
 
                 if Wi <= b_res:
@@ -141,103 +187,18 @@ def swap_itens(S0, X, W, b, hash_changes):
     
     return S1
 
-
-
-def local_search_old(S0, X, W, P, b, F, D):
-
-    X_iter = X.copy()
-    #best_solution = calcule_profit(S0, X, P) - calcule_forfeits(S0, F, D)    
-    best_solution = calcule_solution(S0, X, W, P, b, F, D)
-
-    # Elementos que não estão na mochila
-    for i in S0:
-        X_iter.remove(i)
-
-    S1 = S0.copy()
-    list_change = list()
-    for i in S0:
-        for j in X_iter:
-            S1.remove(i)
-            S1.append(j)
-
-            # solution = calcule_profit(S1, X, P) - calcule_forfeits(S1, F, D)
-            solution = calcule_solution(S1, X, W, P, b, F, D)
-            if solution > best_solution:
-                best_solution = solution
-                list_change = [i, j]                
-
-                # retorna a primeira melhor solução                
-                return S1
-
-            S1.remove(j)
-            S1.append(i)
-
-    if len(list_change) > 1:
-        S1 = move_swap(S1, list_change)
-
-    return S1          
-
-
-def calcule_solution(S0, X, W, P, b, F, D):
-    sum_profit = 0
-    # sum_forfeits = 0
-    forfeit_costs = 0
-    b_res = b
-
-    for s in S0:
-        index = X.index(s)
-        sum_profit += P[index]
-        b_res -= W[index]
-
-    i = 0
-    for pares in F:
-        if pares[0] in S0 and pares[1] in S0:
-            # sum_forfeits += 1
-            forfeit_costs += D[i]
-        i += 1
-
-    sol = sum_profit - forfeit_costs
-
-    if b_res >= 0:
-        return sol
-
-    else:
-        return -1
-
-
-def calcule_profit(S0, X, P):
-    sum_profit = 0
-
-    for s in S0:
-        index = X.index(s)
-        sum_profit += P[index]
-
-    return sum_profit
-
-def calcule_forfeits(S0, F, D):
-    # sum_forfeits = 0
-    forfeit_costs = 0
-
-    i = 0
-    for pares in F:
-        if pares[0] in S0 and pares[1] in S0:
-            # sum_forfeits += 1
-            forfeit_costs += D[i]
-        i += 1
-
-    return forfeit_costs
-
-def move_swap(S1, swap):
-    S1.remove(swap[0])
-    S1.append(swap[1])
-
-    return S1 
-
     
-def perturb_solution():
-    ...
+def perturb_solution(S):
+    S.pop(0)
+    return S
 
-def accept_solution():
-    ...
+def accept_solution(best_local, S, hash_forfeits):
+
+    if best_local//2 > calcule_sum_forfeits(S, hash_forfeits):
+        print(best_local/2, calcule_sum_forfeits(S, hash_forfeits))
+        return True
+    else:
+        return False
+    
 
 
