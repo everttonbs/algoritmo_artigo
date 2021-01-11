@@ -131,7 +131,7 @@ def get_result(out, X, P, F, D, end, start):
     
     
     print('-------------------')
-   #  print('itens ->', out_sorted)
+    # print('itens ->', out_sorted)
     print('Profit ->', sum_profit)      
     print('Cost ->', forfeit_costs)      
     print('Forfeits ->', sum_forfeits) 

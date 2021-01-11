@@ -1,13 +1,12 @@
 
-from docplex.cp.model import CpoModel
-from docplex.cp.config import context
+from docplex.mp.model import Model
 
 
 def run_CPLEX(X, W, P, b, F, D):
-    context.solver.trace_log = False
+    #context.solver.trace_log = False
 
     # Create CPO Model
-    mdl = CpoModel()
+    mdl = Model('knapsack_problem')
 
     # Create model variables
     # X -> itens disponíveis
@@ -20,51 +19,53 @@ def run_CPLEX(X, W, P, b, F, D):
     n_items = len(X) # 500, 700, 800 e 1000
     n_forfeits = len(F)
 
-
-    x_i = mdl.binary_var_list(n_items, name='X')
-    x_j = mdl.binary_var_list(n_items, name='Xj')
+    xi = mdl.binary_var_list(n_items, name='X')   
     v = mdl.binary_var_list(n_forfeits, name='v')
+
 
     profit_sum = 0
     for i in range(n_items):
-        profit_sum += x_i[i] * P[i]
+        profit_sum += xi[i] * P[i]
 
     forfeit_sum = 0
     for k in range(n_forfeits):
         forfeit_sum += D[k] * v[k]
 
-    mdl.add(mdl.maximize(profit_sum - forfeit_sum))
+    mdl.maximize(profit_sum - forfeit_sum)
 
     # restrições
     b_res_sum = 0
     for i in range(n_items):
-        b_res_sum += W[i] * x_i[i]
-    mdl.add(b_res_sum <= b)
+        b_res_sum += W[i] * xi[i]
+    mdl.add_constraint(b_res_sum <= b)
 
-    cost_sum = 0    
-    for i in range(n_items):
-        j = 0       
-        for f in range(n_forfeits):
-            cost_sum += x_i[i] + x_j[j] - v[f]
-        j += 1
 
-    mdl.add(cost_sum <= 1)  
+    for f in range(n_forfeits):
+        for i in range(n_items):
+            for j in range(n_items):
+                if X[i] in F[f] and X[j] in F[f] and i != j:
+                    mdl.add_constraint(xi[i] + xi[j] - v[f] <= 1)
 
+    # print(mdl.export_to_string())
 
     # Executando model
-    print("\nSolving model ....")
+    # print("\nSolving model ....")
+
     try:
-        msol = mdl.solve(TimeLimit=10)
+        msol = mdl.solve()
     except:
         return list()
 
     if msol:        
         list_itens = list()
-        for i in range(len(x_i)):
+
+        for i in range(len(xi)):
             # print('X ', msol[x_i[i]])
-            if msol[x_i[i]] == 1:
+            if msol[xi[i]] == 1:
                 list_itens.append(X[i])
 
+        # msol.display()
+        # print(list_itens)
         return list_itens
         
 
