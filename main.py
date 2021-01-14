@@ -106,14 +106,14 @@ def file_input():
         # alfa, beta = 2, 0.05
         # out = carousel_forfeits.carousel_forteits(X, W, P, b, F, D, alfa, beta)
 
-        out = GreedyForfeits.GreedyForfeits(X, W, P, b, F, D)
+        # out = GreedyForfeits.GreedyForfeits(X, W, P, b, F, D)
 
         # CPLEX
         # cplex_main.run_CPLEX(X, W, P, b, list(), D)
         # out = cplex_main.run_CPLEX(X, W, P, b, F, D)
         
         # ILS
-        # out = ils_heur.run_ils(X, W, P, b, F, D)      
+        out = ils_heur.run_ils(X, W, P, b, F, D)      
 
         end = time.time()
 

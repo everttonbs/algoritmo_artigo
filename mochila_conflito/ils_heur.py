@@ -1,40 +1,42 @@
 
 from mochila_conflito import GreedyForfeits
 from mochila_conflito import carousel_forfeits
+import random
 
 def run_ils(X, W, P, b, F, D):
     # Solução Inicial
     S0 = GreedyForfeits.GreedyForfeits(X, W, P, b, F, D)
     
     hash_forfeits = get_hash(X, F) # retorna dicionario
+    # hash_cost = get_cost(X, F, D)
+    # hash_profit = get_profit(X, W, P)
     
     Si = local(S0, X, W, b, hash_forfeits, S0[0])
     # Si = local_search(S0, X, W, b, hash_forfeits)
+    
+    history = list()
+
+    # NumeroItens // 2
+    while len(history) != 50:
+
+        S1 = perturb_solution(Si, history)
+
+        S2 = local(S1, X, W, b, hash_forfeits, S1[0])
+        # S2 = local_search(S0, X, W, b, hash_forfeits)
+        
+        Si = accept_solution(Si, S2, hash_forfeits)
+
 
     Sii = GreedyForfeits.GreedyForfeitsInit(X, W, P, b, F, D, Si)
-    best_local = calcule_sum_forfeits(Sii, hash_forfeits)   
-    
-    S1 = Sii.copy()  
-
-    while True:
-
-        S1 = perturb_solution(Sii)        
-        S1 = local(S1, X, W, b, hash_forfeits, S1[0])
-        
-        if accept_solution(best_local, S1, hash_forfeits):
-            break        
-
-    Sii = GreedyForfeits.GreedyForfeitsInit(X, W, P, b, F, D, S1)
 
     print('Solução inical: ', len(S0))
     print('Solução ILS: ', len(Si))
     print('Solução final -> ', len(Sii))
     print('Verificação de conjunto -> ', len(set(Sii)))
-    print(calcule_sum_forfeits(Sii, hash_forfeits))
-
+    # print(calcule_sum_forfeits(Si, hash_forfeits))
+    # print(calcule_sum_forfeits(Sii, hash_forfeits))
     
     return Sii
-    # return list()
 
 def get_hash(X, F):
 
@@ -76,6 +78,16 @@ def get_cost(X, F, D):
 
     return hash_cost
 
+def get_profit(X, W, P):
+
+    hash_profit = dict()
+    list_profit = list()
+    
+    for x in range(len(X)):
+        hash_profit[X[x]] = P[x] / W[x]
+
+    return hash_profit
+
 def local(S0, X, W, b, hash_forfeits, i):
     
     hash_changes = dict()
@@ -91,14 +103,14 @@ def local(S0, X, W, b, hash_forfeits, i):
         sum_forfeits_x = calcule_sum_forfeits(S0, hash_forfeits[x])        
         
         # Só adiciona itens com menores conflitos
-        if sum_forfeits_x < sum_forfeits_s:                      
+        if sum_forfeits_x <= sum_forfeits_s :                      
             hash_changes[i].append(x)
 
-            S1 = swap_itens(S0, X, W, b, hash_changes)
-            # print(S1)
-            return S1
+    S1 = swap_itens(S0, X, W, b, hash_changes)
+    # print(S1)
+    return S1
 
-    return S0  
+    # return S0  
 
 
 def local_search(S0, X, W, b, hash_forfeits):
@@ -188,17 +200,45 @@ def swap_itens(S0, X, W, b, hash_changes):
     return S1
 
     
-def perturb_solution(S):
-    S.pop(0)
-    return S
+def perturb_solution(S, history):
 
-def accept_solution(best_local, S, hash_forfeits):
+    S_aux = S[1:] + S[:1]
+    history.append(S_aux)
+    # b_res = b
 
-    if best_local//2 > calcule_sum_forfeits(S, hash_forfeits):
-        print(best_local/2, calcule_sum_forfeits(S, hash_forfeits))
-        return True
-    else:
-        return False
+    # for s in S_aux:
+    #     index = X.index(s)
+    #     if s in S_aux:
+    #         b_res -= W[index]
+
+    # while b_res > 0:
+    #     index = random.randint(0, len(X) -1)
+    #     if X[index] not in S_aux:
+    #         if b_res > W[index]:
+    #             S_aux.append(X[index])
+    #             b_res -= W[index]
+    #         else:
+    #             return S_aux
+
+    return S_aux
+
+def accept_solution(Sii, S, hash_forfeits):
     
+    best_local = 0
+    for s in Sii:
+        best_local += calcule_sum_forfeits(Sii, hash_forfeits[s])
+    
+    aux_local = 0
+    for s in S:
+        aux_local += calcule_sum_forfeits(S, hash_forfeits[s])    
 
+    # print('Sii ', best_local, 'S', aux_local)
+    # print(len(Sii), len(S))   
+
+    if best_local < aux_local: 
+        # print('aux')       
+        return Sii
+
+    else:        
+        return S   
 
