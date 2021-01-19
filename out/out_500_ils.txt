@@ -1,0 +1,110 @@
+inputs\500_input_1.txt
+Solução ILS:  157
+Verificação do conjunto:  157
+-------------------
+Profit -> 2866.0
+Cost -> 571.0
+Forfeits -> 92
+Sol. -> 2295.0
+Time: 16.053000450134277
+-------------------
+
+inputs\500_input_10.txt
+Solução ILS:  160
+Verificação do conjunto:  160
+-------------------
+Profit -> 2814.0
+Cost -> 582.0
+Forfeits -> 93
+Sol. -> 2232.0
+Time: 16.520000219345093
+-------------------
+
+inputs\500_input_2.txt
+Solução ILS:  157
+Verificação do conjunto:  157
+-------------------
+Profit -> 2826.0
+Cost -> 535.0
+Forfeits -> 97
+Sol. -> 2291.0
+Time: 16.41300106048584
+-------------------
+
+inputs\500_input_3.txt
+Solução ILS:  161
+Verificação do conjunto:  161
+-------------------
+Profit -> 2919.0
+Cost -> 749.0
+Forfeits -> 134
+Sol. -> 2170.0
+Time: 16.628999948501587
+-------------------
+
+inputs\500_input_4.txt
+Solução ILS:  161
+Verificação do conjunto:  161
+-------------------
+Profit -> 2852.0
+Cost -> 696.0
+Forfeits -> 114
+Sol. -> 2156.0
+Time: 16.674999237060547
+-------------------
+
+inputs\500_input_5.txt
+Solução ILS:  158
+Verificação do conjunto:  158
+-------------------
+Profit -> 2972.0
+Cost -> 606.0
+Forfeits -> 102
+Sol. -> 2366.0
+Time: 16.47000026702881
+-------------------
+
+inputs\500_input_6.txt
+Solução ILS:  160
+Verificação do conjunto:  160
+-------------------
+Profit -> 2995.0
+Cost -> 703.0
+Forfeits -> 112
+Sol. -> 2292.0
+Time: 16.6509952545166
+-------------------
+
+inputs\500_input_7.txt
+Solução ILS:  161
+Verificação do conjunto:  161
+-------------------
+Profit -> 2847.0
+Cost -> 593.0
+Forfeits -> 100
+Sol. -> 2254.0
+Time: 16.74897336959839
+-------------------
+
+inputs\500_input_8.txt
+Solução ILS:  167
+Verificação do conjunto:  167
+-------------------
+Profit -> 2936.0
+Cost -> 701.0
+Forfeits -> 107
+Sol. -> 2235.0
+Time: 17.551032066345215
+-------------------
+
+inputs\500_input_9.txt
+Solução ILS:  157
+Verificação do conjunto:  157
+-------------------
+Profit -> 2954.0
+Cost -> 551.0
+Forfeits -> 89
+Sol. -> 2403.0
+Time: 16.42400074005127
+-------------------
+
